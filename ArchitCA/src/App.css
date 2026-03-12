@@ -1,0 +1,465 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  /* Paleta de colores principal - Gris azulado suave */
+  --bg-primary: #F0F4F8;
+  --bg-secondary: #E2E8F0;
+  --bg-card: #FFFFFF;
+  
+  /* Texto */
+  --text-primary: #1A202C;
+  --text-secondary: #4A5568;
+  --text-muted: #718096;
+  
+  /* Acentos */
+  --accent-primary: #4A5568;
+  --accent-hover: #2D3748;
+  
+  /* Colores de habitaciones - Pastel suave */
+  --room-sala: #E3F2FD;
+  --room-cocina: #FFF3E0;
+  --room-bano: #E8F5E9;
+  --room-dormitorio: #F3E5F5;
+  --room-dormitorio2: #FCE4EC;
+  
+  /* Sombras suaves */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  
+  /* Bordes */
+  --border-radius: 12px;
+  --border-color: #E2E8F0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  line-height: 1.5;
+}
+
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-header {
+  background: linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 100%);
+  border-bottom: 1px solid var(--border-color);
+  padding: 16px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: var(--shadow-sm);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-icon {
+  font-size: 1.75rem;
+}
+
+.logo h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+  letter-spacing: -0.025em;
+}
+
+.nav {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.nav-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  color: var(--text-secondary);
+  transition: all 0.2s;
+  font-size: 0.875rem;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.nav-btn:hover {
+  background: var(--bg-secondary);
+  color: var(--accent-primary);
+}
+
+.nav-btn.active {
+  background: var(--accent-primary);
+  color: white;
+  border-color: var(--accent-primary);
+}
+
+.history-nav-btn {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  color: var(--text-secondary);
+  transition: all 0.2s;
+  font-size: 0.875rem;
+  min-height: 44px;
+}
+
+.history-nav-btn:hover {
+  background: var(--bg-secondary);
+  color: var(--accent-primary);
+  border-color: var(--accent-primary);
+}
+
+.app-main {
+  flex: 1;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.app-footer {
+  background: var(--bg-card);
+  border-top: 1px solid var(--border-color);
+  padding: 16px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+
+.design-workspace {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  width: 100%;
+  max-width: 100%;
+  height: calc(100vh - 200px);
+  min-height: 600px;
+}
+
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 48px;
+}
+
+.loading-spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid var(--bg-secondary);
+  border-top-color: var(--accent-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.error {
+  background: var(--bg-card);
+  border-radius: var(--border-radius);
+  padding: 48px;
+  text-align: center;
+  max-width: 400px;
+  box-shadow: var(--shadow-md);
+}
+
+.error h3 {
+  margin: 0 0 16px 0;
+  color: #E53E3E;
+}
+
+.error p {
+  margin: 0 0 24px 0;
+  color: var(--text-secondary);
+}
+
+.error button {
+  padding: 12px 24px;
+  background: var(--accent-primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.error button:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+}
+
+/* Checklist Panel */
+.checklist-panel {
+  background: var(--bg-card);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-md);
+  padding: 20px;
+  width: 280px;
+  border: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+
+.checklist-panel h3 {
+  margin: 0 0 16px 0;
+  font-size: 1rem;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.checklist-items {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.checklist-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  border: 1px solid transparent;
+  transition: all 0.2s;
+}
+
+.checklist-item.completed {
+  background: #E6FFFA;
+  border-color: #38B2AC;
+}
+
+.checklist-icon {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.checklist-name {
+  flex: 1;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.checklist-status {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--bg-secondary);
+  border: 2px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: transparent;
+  transition: all 0.2s;
+}
+
+.checklist-item.completed .checklist-status {
+  background: #38B2AC;
+  border-color: #38B2AC;
+  color: white;
+}
+
+.progress-bar-container {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-color);
+}
+
+.progress-bar-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.progress-bar {
+  height: 6px;
+  background: var(--bg-secondary);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: var(--accent-primary);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+/* MOBILE LANDSCAPE - Scroll horizontal */
+@media (max-width: 1023px) and (orientation: landscape) {
+  .app-main {
+    padding: 16px;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .design-workspace {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    height: calc(100vh - 140px);
+    min-height: auto;
+    width: max-content;
+    max-width: none;
+    gap: 16px;
+    padding-bottom: 16px;
+  }
+
+  /* Indicador de scroll */
+  .design-workspace::after {
+    content: '';
+    flex: 0 0 20px;
+  }
+
+  .room-palette {
+    width: 240px;
+    flex-shrink: 0;
+  }
+
+  .design-canvas-container {
+    width: calc(100vh - 180px);
+    min-width: 500px;
+    flex-shrink: 0;
+  }
+
+  .checklist-panel {
+    width: 240px;
+    flex-shrink: 0;
+  }
+}
+
+/* MOBILE PORTRAIT - Apilado vertical */
+@media (max-width: 768px) and (orientation: portrait) {
+  .app-header {
+    padding: 12px 16px;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .nav {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .nav-btn {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+    min-height: 36px;
+  }
+
+  .app-main {
+    padding: 16px;
+  }
+
+  .design-workspace {
+    flex-direction: column;
+    align-items: stretch;
+    height: auto;
+    min-height: auto;
+  }
+
+  .checklist-panel {
+    width: 100%;
+    order: -1;
+  }
+
+  .logo h1 {
+    font-size: 1.25rem;
+  }
+}
+
+/* TABLET */
+@media (min-width: 769px) and (max-width: 1023px) {
+  .app-main {
+    padding: 20px;
+  }
+
+  .design-workspace {
+    flex-direction: column;
+    align-items: stretch;
+    height: auto;
+    min-height: auto;
+  }
+
+  .checklist-panel {
+    width: 100%;
+    order: -1;
+  }
+
+  .checklist-items {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .checklist-item {
+    flex: 1;
+    min-width: 200px;
+  }
+}
+
+/* DESKTOP - Grid de 3 columnas */
+@media (min-width: 1024px) {
+  .app-main {
+    padding: 24px;
+    max-width: 100%;
+  }
+
+  .design-workspace {
+    display: grid;
+    grid-template-columns: 240px 1fr 280px;
+    gap: 24px;
+    align-items: start;
+    max-width: 1600px;
+    margin: 0 auto;
+  }
+
+  .room-palette {
+    width: 100%;
+  }
+
+  .design-canvas-container {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .checklist-panel {
+    width: 100%;
+  }
+}

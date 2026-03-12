@@ -1,0 +1,256 @@
+.create-mode-container {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+  min-height: calc(100vh - 200px);
+}
+
+.create-mode-card {
+  background: white;
+  border-radius: 16px;
+  padding: 2.5rem;
+  max-width: 700px;
+  width: 100%;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.create-mode-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.create-mode-header h2 {
+  font-size: 2rem;
+  color: #1a1a2e;
+  margin-bottom: 0.5rem;
+}
+
+.create-mode-header p {
+  color: #666;
+  font-size: 1.1rem;
+}
+
+.create-mode-error {
+  background: #ffebee;
+  color: #c62828;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.create-mode-section {
+  margin-bottom: 2rem;
+}
+
+.create-mode-section h3 {
+  font-size: 1.2rem;
+  color: #1a1a2e;
+  margin-bottom: 1rem;
+}
+
+.create-mode-section label {
+  display: block;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.project-name-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+.project-name-input:focus {
+  outline: none;
+  border-color: #4a90e2;
+}
+
+.dimensions-inputs {
+  display: flex;
+  align-items: flex-end;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.dimension-field {
+  flex: 1;
+}
+
+.dimension-field label {
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.dimension-field input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+.dimension-field input:focus {
+  outline: none;
+  border-color: #4a90e2;
+}
+
+.dimension-separator {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #666;
+  padding-bottom: 0.75rem;
+}
+
+.terrain-preview {
+  text-align: center;
+  padding: 0.75rem;
+  background: #f5f5f5;
+  border-radius: 8px;
+}
+
+.terrain-area {
+  font-weight: 600;
+  color: #1a1a2e;
+}
+
+.section-hint {
+  color: #666;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.rooms-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.75rem;
+}
+
+.room-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.room-checkbox:hover {
+  border-color: #4a90e2;
+  background: #f8f9fa;
+}
+
+.room-checkbox.selected {
+  border-color: #4a90e2;
+  background: #e3f2fd;
+}
+
+.room-checkbox input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.room-color-indicator {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.room-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.room-name {
+  font-weight: 600;
+  color: #1a1a2e;
+}
+
+.room-min-area {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.area-summary {
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 8px;
+  text-align: center;
+  font-weight: 600;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.area-summary.valid {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.area-summary.invalid {
+  background: #ffebee;
+  color: #c62828;
+}
+
+.area-warning {
+  font-size: 0.9rem;
+  font-weight: normal;
+}
+
+.start-design-btn {
+  width: 100%;
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-top: 1rem;
+}
+
+.start-design-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.start-design-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+@media (max-width: 600px) {
+  .create-mode-container {
+    padding: 1rem;
+  }
+  
+  .create-mode-card {
+    padding: 1.5rem;
+  }
+  
+  .dimensions-inputs {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .dimension-separator {
+    text-align: center;
+    padding: 0;
+  }
+  
+  .rooms-grid {
+    grid-template-columns: 1fr;
+  }
+}
