@@ -1,5 +1,8 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import './ResultsView.css';
+import { ScoreDisplay } from './ScoreDisplay';
+import { calculateDesignScore } from '../utils/designScorer';
+import { useBestScore } from '../hooks/useScoreCalculator';
 
 export function ResultsView({ 
   design, 
@@ -7,6 +10,8 @@ export function ResultsView({
   onNewDesign, 
   onViewExamples 
 }) {
+  const { getBestScore, saveBestScore } = useBestScore();
+  
   const completedAt = new Date().toLocaleDateString('es-ES', {
     weekday: 'long',
     year: 'numeric',
@@ -14,15 +19,38 @@ export function ResultsView({
     day: 'numeric'
   });
 
+  // Calcular score del diseño
+  const score = useMemo(() => {
+    if (!challenge) return null;
+    return calculateDesignScore(design, challenge);
+  }, [design, challenge]);
+
+  // Guardar y verificar si es récord
+  const scoreRecord = useMemo(() => {
+    if (!challenge || !score) return null;
+    return saveBestScore(challenge.id, score.total);
+  }, [challenge, score, saveBestScore]);
+
+  const previousBest = challenge ? getBestScore(challenge.id) : 0;
+
   return (
     <div className="results-view">
       <div className="results-header">
-        <div className="success-badge"></div>
+        <div className="success-badge">🏆</div>
         <h2>¡Desafío Completado! 🎉</h2>
         <p className="completion-date">{completedAt}</p>
       </div>
 
       <div className="results-content">
+        {/* Score del Profesor */}
+        {score && scoreRecord && (
+          <ScoreDisplay 
+            score={score}
+            isNewRecord={scoreRecord.isNewRecord}
+            previousBest={scoreRecord.previousBest}
+          />
+        )}
+
         <div className="your-design-section">
           <h3>Tu Diseño</h3>
           <div className="design-summary">

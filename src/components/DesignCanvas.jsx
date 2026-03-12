@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import './DesignCanvas.css';
+import { ScorePanel } from './ScorePanel';
+import { useScoreCalculator } from '../hooks/useScoreCalculator';
 
 const BASE_GRID_SIZE = 30; // pixels per meter a zoom 1.0
 const MIN_ZOOM = 0.3;
@@ -11,7 +13,9 @@ export function DesignCanvas({
   rooms, 
   onDesignComplete, 
   onDesignUpdate,
-  initialLayout = [] 
+  initialLayout = [],
+  designMode = 'challenge',
+  challenge = null
 }) {
   const containerRef = useRef(null);
   const canvasRef = useRef(null);
@@ -66,6 +70,17 @@ export function DesignCanvas({
   const [editWidth, setEditWidth] = useState('');
   const [editHeight, setEditHeight] = useState('');
   const [editArea, setEditArea] = useState('');
+  
+  // Estado para mostrar/ocultar panel de score
+  const [showScorePanel, setShowScorePanel] = useState(true);
+
+  // Calcular score en tiempo real (solo para challenge mode)
+  const { score } = useScoreCalculator(
+    placedRooms,
+    challenge,
+    designMode,
+    { enabled: designMode === 'challenge' }
+  );
 
   // Calcular tamaño del canvas en píxeles según zoom actual
   const canvasWidth = terrain.width * BASE_GRID_SIZE * zoom;
@@ -1204,7 +1219,14 @@ export function DesignCanvas({
         <span className="legend-hint">• Scroll o botones para zoom • Arrastra para mover vista</span>
       </div>
 
-      {/* Botón modo clipboard */}
+      {/* Panel de Score (solo para Daily Challenge) */}
+      {designMode === 'challenge' && challenge && (
+        <ScorePanel
+          score={score}
+          isVisible={showScorePanel}
+          onToggle={() => setShowScorePanel(!showScorePanel)}
+        />
+      )}
     </div>
   );
 }

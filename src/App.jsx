@@ -216,6 +216,8 @@ function App() {
                   onDesignComplete={handleDesignComplete}
                   onDesignUpdate={handleDesignUpdate}
                   initialLayout={currentDesign}
+                  designMode="challenge"
+                  challenge={challenge}
                 />
                 <ChecklistPanel 
                   rooms={challenge.rooms} 
@@ -231,6 +233,8 @@ function App() {
                   onDesignComplete={handleDesignComplete}
                   onDesignUpdate={handleDesignUpdate}
                   initialLayout={currentDesign}
+                  designMode="free"
+                  challenge={null}
                 />
                 <ChecklistPanel 
                   rooms={freeProject.rooms} 
