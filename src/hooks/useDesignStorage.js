@@ -3,7 +3,35 @@ import { useState, useCallback } from 'react';
 const STORAGE_KEYS = {
   CURRENT_DESIGN: 'architca_current_design',
   COMPLETED_DESIGNS: 'architca_completed_designs',
-  DESIGN_HISTORY: 'architca_design_history'
+  DESIGN_HISTORY: 'architca_design_history',
+  CURRENT_FLOOR: 'architca_current_floor' // Para multi-nivel
+};
+
+// Helper para normalizar diseños (compatibilidad hacia atrás)
+const normalizeDesign = (design) => {
+  if (!design) return null;
+  
+  // Si es un diseño antiguo (sin modo especificado), asumir single_floor
+  if (!design.mode) {
+    return {
+      ...design,
+      mode: 'single_floor',
+      floors: null
+    };
+  }
+  
+  // Si es multi-nivel pero no tiene estructura de pisos
+  if (design.mode === 'multi_level' && !design.floors) {
+    return {
+      ...design,
+      floors: [{
+        floorNumber: 1,
+        rooms: design.rooms || []
+      }]
+    };
+  }
+  
+  return design;
 };
 
 const loadFromStorage = () => {
@@ -11,18 +39,21 @@ const loadFromStorage = () => {
     const savedCurrent = localStorage.getItem(STORAGE_KEYS.CURRENT_DESIGN);
     const savedCompleted = localStorage.getItem(STORAGE_KEYS.COMPLETED_DESIGNS);
     const savedHistory = localStorage.getItem(STORAGE_KEYS.DESIGN_HISTORY);
+    const savedCurrentFloor = localStorage.getItem(STORAGE_KEYS.CURRENT_FLOOR);
 
     return {
-      currentDesign: savedCurrent ? JSON.parse(savedCurrent) : null,
-      completedDesigns: savedCompleted ? JSON.parse(savedCompleted) : [],
-      designHistory: savedHistory ? JSON.parse(savedHistory) : []
+      currentDesign: savedCurrent ? normalizeDesign(JSON.parse(savedCurrent)) : null,
+      completedDesigns: savedCompleted ? JSON.parse(savedCompleted).map(normalizeDesign) : [],
+      designHistory: savedHistory ? JSON.parse(savedHistory).map(normalizeDesign) : [],
+      currentFloor: savedCurrentFloor ? parseInt(savedCurrentFloor, 10) : 1
     };
   } catch (error) {
     console.error('Error loading from storage:', error);
     return {
       currentDesign: null,
       completedDesigns: [],
-      designHistory: []
+      designHistory: [],
+      currentFloor: 1
     };
   }
 };
@@ -30,7 +61,7 @@ const loadFromStorage = () => {
 export function useDesignStorage() {
   const [state, setState] = useState(loadFromStorage);
 
-  const saveCurrentDesign = useCallback((design) => {
+  const saveCurrentDesign = useCallback((design, floorNumber = null) => {
     try {
       const designWithTimestamp = {
         ...design,
@@ -40,9 +71,28 @@ export function useDesignStorage() {
         STORAGE_KEYS.CURRENT_DESIGN,
         JSON.stringify(designWithTimestamp)
       );
-      setState(prev => ({ ...prev, currentDesign: designWithTimestamp }));
+      
+      // Guardar piso actual si es multi-nivel
+      if (floorNumber !== null) {
+        localStorage.setItem(STORAGE_KEYS.CURRENT_FLOOR, floorNumber.toString());
+      }
+      
+      setState(prev => ({ 
+        ...prev, 
+        currentDesign: designWithTimestamp,
+        currentFloor: floorNumber !== null ? floorNumber : prev.currentFloor
+      }));
     } catch (error) {
       console.error('Error saving current design:', error);
+    }
+  }, []);
+
+  const saveCurrentFloor = useCallback((floorNumber) => {
+    try {
+      localStorage.setItem(STORAGE_KEYS.CURRENT_FLOOR, floorNumber.toString());
+      setState(prev => ({ ...prev, currentFloor: floorNumber }));
+    } catch (error) {
+      console.error('Error saving current floor:', error);
     }
   }, []);
 
@@ -85,7 +135,8 @@ export function useDesignStorage() {
   const clearCurrentDesign = useCallback(() => {
     try {
       localStorage.removeItem(STORAGE_KEYS.CURRENT_DESIGN);
-      setState(prev => ({ ...prev, currentDesign: null }));
+      localStorage.removeItem(STORAGE_KEYS.CURRENT_FLOOR);
+      setState(prev => ({ ...prev, currentDesign: null, currentFloor: 1 }));
     } catch (error) {
       console.error('Error clearing current design:', error);
     }
@@ -107,7 +158,9 @@ export function useDesignStorage() {
     currentDesign: state.currentDesign,
     completedDesigns: state.completedDesigns,
     designHistory: state.designHistory,
+    currentFloor: state.currentFloor,
     saveCurrentDesign,
+    saveCurrentFloor,
     completeDesign,
     clearCurrentDesign,
     getDesignsForChallenge,

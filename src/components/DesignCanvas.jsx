@@ -832,8 +832,6 @@ export function DesignCanvas({
             className={`complete-btn ${isComplete ? 'active' : ''}`}
             onClick={handleComplete}
             disabled={placedRooms.length === 0}
-           
-           
           >
             {isComplete ? '✓ Completar' : 'Completar'}
           </button>
@@ -842,7 +840,7 @@ export function DesignCanvas({
 
       {!isComplete && missingRooms.length > 0 && (
         <div className="missing-rooms-warning">
-          Faltan espacios: {missingRooms.map(id => 
+          Faltan espacios: {missingRooms.map(id =>
             rooms.find(r => r.id === id)?.name
           ).join(', ')}
         </div>

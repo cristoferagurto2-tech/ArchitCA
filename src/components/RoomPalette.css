@@ -87,19 +87,51 @@
   color: var(--text-muted);
 }
 
-/* Responsive */
+/* Responsive - Mobile */
 @media (max-width: 768px) {
   .room-palette {
     max-width: 100%;
+    padding: 12px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  
+  .room-palette h3 {
+    font-size: 0.9375rem;
+    margin-bottom: 4px;
+  }
+  
+  .palette-hint {
+    font-size: 0.75rem;
+    margin-bottom: 12px;
   }
   
   .rooms-grid {
-    flex-direction: row;
-    flex-wrap: wrap;
+    display: flex;
+    flex-direction: column;  /* Una tarjeta debajo de otra */
+    gap: 8px;
+    /* SIN max-height ni overflow - muestra todos */
   }
   
   .room-card {
-    flex: 1;
-    min-width: 140px;
+    padding: 12px 16px;     /* Más cómodo para touch */
+    min-height: 52px;
+    gap: 12px;
+    width: 100%;           /* Ancho completo */
+  }
+  
+  .room-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 1.1rem;
+  }
+  
+  .room-label {
+    font-size: 0.875rem;
+  }
+  
+  .room-min-area {
+    font-size: 0.75rem;
   }
 }

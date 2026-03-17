@@ -241,6 +241,47 @@ body {
   font-weight: 600;
 }
 
+/* Header colapsable para checklist */
+.checklist-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 12px;
+}
+
+.checklist-header:hover {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.checklist-summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.checklist-count {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  background: var(--bg-secondary);
+  padding: 4px 8px;
+  border-radius: 12px;
+}
+
+.checklist-percentage {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+
+.expand-icon {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  transition: transform 0.2s;
+}
+
 .checklist-items {
   display: flex;
   flex-direction: column;

@@ -1,0 +1,366 @@
+/* 
+  NOTA PARA DESARROLLADORES FUTUROS:
+  
+  Este archivo maneja el layout de 3 columnas para Multi-Nivel:
+  1. RoomPalette (izquierda) - Lista de espacios arrastrables
+  2. DesignCanvas (centro) - Área de diseño principal  
+  3. ChecklistPanel (derecha) - Lista de requisitos
+  
+  PUNTOS CRÍTICOS:
+  - height: calc(100vh - 160px) debe mantenerse para evitar overflow
+  - min-height: 400px garantiza que el canvas siempre sea visible
+  - En mobile (< 768px) cambia a layout vertical (columna)
+  - Si modificas este archivo, testea en desktop y mobile
+  
+  Última modificación: 2024
+  Razón: Fix de canvas no visible en desktop y layout roto en mobile
+*/
+
+/* ============================================
+   CONTENEDOR PRINCIPAL
+   ============================================ */
+.multi-level-canvas-container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 160px);  /* 100vh menos header + margen */
+  min-height: 500px;            /* Garantizar espacio mínimo */
+  width: 100%;
+  max-width: 100%;
+  gap: 8px;
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+/* ============================================
+   HEADER CON NAVEGADOR DE PISOS
+   ============================================ */
+.multi-level-header {
+  background: #f8f9fa;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 8px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;  /* No encoger */
+}
+
+.floor-info-section {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+}
+
+.floor-rooms-info {
+  margin-left: auto;
+  font-size: 13px;
+  color: #666;
+}
+
+.floor-rooms-count {
+  background: #e3f2fd;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-weight: 500;
+}
+
+/* Badge de progreso total */
+.floor-progress-badge {
+  margin-left: auto;
+  margin-right: 12px;
+}
+
+.progress-text {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* ============================================
+   CANVAS WRAPPER - ÁREA DE TRABAJO
+   ============================================ */
+.floor-canvas-wrapper {
+  flex: 1;
+  display: flex;
+  gap: 16px;
+  min-height: 400px;                 /* Altura mínima garantizada */
+  max-height: calc(100vh - 240px);   /* No exceder pantalla */
+  padding: 16px;
+  background: #f5f5f5;
+  border-radius: 8px;
+  overflow: auto;                    /* Scroll si es necesario */
+}
+
+/* RoomPalette (primer hijo) */
+.floor-canvas-wrapper > *:first-child {
+  flex-shrink: 0;
+  width: 280px;  /* Ancho fijo para palette */
+}
+
+/* DesignCanvas (segundo hijo - centro) */
+.floor-canvas-wrapper > *:nth-child(2) {
+  flex: 1;
+  min-width: 0;
+  min-height: 350px;    /* Canvas interno visible */
+  position: relative;   /* Para posicionamiento de elementos */
+}
+
+/* ChecklistPanel (último hijo) */
+.floor-canvas-wrapper > *:last-child {
+  flex-shrink: 0;
+  width: 280px;  /* Ancho fijo para checklist */
+}
+
+/* ============================================
+   RESUMEN DE PISOS (FOOTER)
+   ============================================ */
+.multi-level-summary {
+  background: #fafafa;
+  border-top: 1px solid #e0e0e0;
+  padding: 12px 16px;
+  max-height: 150px;
+  overflow-y: auto;
+  flex-shrink: 0;  /* No encoger */
+}
+
+.summary-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.floor-status-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.floor-status-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.floor-status-item:hover {
+  background: #f5f5f5;
+  border-color: #ccc;
+}
+
+.floor-status-item.active {
+  border-color: #2196F3;
+  background: #e3f2fd;
+}
+
+.floor-status-item.complete {
+  border-color: #4caf50;
+  background: #e8f5e9;
+}
+
+.status-floor-number {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f0f0f0;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 11px;
+}
+
+.floor-status-item.active .status-floor-number {
+  background: #2196F3;
+  color: white;
+}
+
+.floor-status-item.complete .status-floor-number {
+  background: #4caf50;
+  color: white;
+}
+
+.status-floor-name {
+  font-weight: 500;
+  color: #333;
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.status-count {
+  color: #999;
+  font-size: 11px;
+}
+
+.status-indicator {
+  font-size: 14px;
+  color: #ccc;
+}
+
+.floor-status-item.complete .status-indicator {
+  color: #4caf50;
+}
+
+/* ============================================
+   RESPONSIVE - TABLET (768px - 1024px)
+   ============================================ */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .multi-level-canvas-container {
+    height: calc(100vh - 140px);
+  }
+
+  .floor-canvas-wrapper {
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .floor-canvas-wrapper > *:first-child,
+  .floor-canvas-wrapper > *:last-child {
+    width: 240px; /* Paneles más angostos */
+  }
+}
+
+/* ============================================
+   RESPONSIVE - MOBILE (< 768px)
+   ============================================ */
+@media (max-width: 768px) {
+  .multi-level-canvas-container {
+    height: auto;
+    min-height: auto;
+    padding: 8px 8px 80px 8px;  /* Espacio extra abajo para footer */
+    gap: 12px;
+  }
+
+  .multi-level-header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 8px;
+    gap: 8px;
+  }
+
+  .floor-info-section {
+    flex-direction: column;
+    width: 100%;
+    gap: 8px;
+  }
+
+  .floor-rooms-info {
+    margin-left: 0;
+    width: 100%;
+    text-align: center;
+  }
+
+  .floor-progress-badge {
+    margin-left: 0;
+    margin-right: 0;
+    width: 100%;
+    text-align: center;
+  }
+
+  .progress-text {
+    font-size: 12px;
+    padding: 4px 10px;
+  }
+
+  /* CAMBIO CRÍTICO: Layout vertical en móvil */
+  .floor-canvas-wrapper {
+    flex-direction: column;
+    min-height: auto;
+    max-height: none;
+    gap: 8px;
+    padding: 8px;
+    overflow: visible;
+  }
+
+  /* ChecklistPanel ARRIBA - COLAPSABLE */
+  .floor-canvas-wrapper > *:last-child {
+    width: 100%;
+    order: 0;                 /* PRIMERO */
+    max-height: none;         /* Sin límite, controlado por estado */
+    overflow: visible;
+    margin-bottom: 8px;
+  }
+
+  /* RoomPalette - Lista completa sin scroll interno */
+  .floor-canvas-wrapper > *:first-child {
+    width: 100%;
+    max-height: none;         /* SIN LÍMITE - muestra todos los espacios */
+    overflow: visible;        /* Sin scrollbars */
+    display: block;
+    padding: 12px;
+    order: 1;                 /* SEGUNDO */
+    position: relative;       /* Sin sticky - fluye con la página */
+    background: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border-radius: 8px;
+  }
+
+  /* DesignCanvas - EXPANDIBLE */
+  .floor-canvas-wrapper > *:nth-child(2) {
+    width: 100%;
+    min-height: 350px;
+    height: auto;             /* Crece si hay espacio */
+    flex: 1;                  /* Ocupa espacio disponible */
+    order: 2;                 /* TERCERO */
+    touch-action: none;       /* Prevenir scroll accidental en touch */
+  }
+
+  /* Resumen de pisos más compacto */
+  .multi-level-summary {
+    padding: 8px;
+    max-height: 100px;
+  }
+
+  .floor-status-list {
+    justify-content: center;
+  }
+
+  .floor-status-item {
+    padding: 4px 8px;
+    font-size: 11px;
+  }
+
+  .status-floor-name {
+    max-width: 60px;
+  }
+}
+
+/* ============================================
+   RESPONSIVE - MOBILE PEQUEÑO (< 480px)
+   ============================================ */
+@media (max-width: 480px) {
+  .multi-level-header {
+    padding: 4px;
+  }
+
+  .floor-status-item {
+    padding: 3px 6px;
+  }
+
+  .status-floor-name {
+    display: none;
+  }
+
+  .status-count {
+    font-size: 10px;
+  }
+
+  .floor-canvas-wrapper > *:nth-child(2) {
+    min-height: 250px;
+    height: 250px;
+  }
+}
