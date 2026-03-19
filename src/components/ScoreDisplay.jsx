@@ -1,10 +1,32 @@
 import React from 'react';
 import './ScoreDisplay.css';
 
-export function ScoreDisplay({ score, isNewRecord, previousBest }) {
+export function ScoreDisplay({ score, isNewRecord, previousBest, mode = 'detailed' }) {
   if (!score) return null;
   
-  const { total, breakdown, occupancyRate } = score;
+  const { total, breakdown, occupancyRate, feedback } = score;
+  
+  // Función para simplificar feedback (máximo 4 items, ordenados por prioridad)
+  const getSimplifiedFeedback = (feedbackList) => {
+    if (!feedbackList || feedbackList.length === 0) return [];
+    if (feedbackList.length <= 4) return feedbackList;
+    
+    // Ordenar por prioridad: error > warning > success
+    const priority = { error: 0, warning: 1, success: 2 };
+    const sorted = [...feedbackList].sort((a, b) => priority[a.type] - priority[b.type]);
+    
+    return sorted.slice(0, 4);
+  };
+  
+  // Determinar qué feedback mostrar según el modo
+  const displayFeedback = mode === 'simple' 
+    ? getSimplifiedFeedback(feedback)
+    : feedback;
+  
+  // Calcular si hay más items ocultos
+  const hasMoreItems = mode === 'simple' && feedback && feedback.length > 4;
+  const totalItems = feedback ? feedback.length : 0;
+  const displayedItems = displayFeedback ? displayFeedback.length : 0;
   
   // Determinar color según score
   const getScoreColor = (score) => {
@@ -135,11 +157,18 @@ export function ScoreDisplay({ score, isNewRecord, previousBest }) {
         </div>
       </div>
       
-      {score.feedback && score.feedback.length > 0 && (
+      {displayFeedback && displayFeedback.length > 0 && (
         <div className="score-feedback-section">
-          <h4>Feedback del Profesor</h4>
+          <div className="feedback-header">
+            <h4>Feedback del Profesor</h4>
+            {mode === 'simple' && (
+              <span className="simplified-badge" title="Mostrando los items más importantes">
+                📋 Simplificado
+              </span>
+            )}
+          </div>
           <ul className="feedback-list">
-            {score.feedback.map((item, index) => (
+            {displayFeedback.map((item, index) => (
               <li 
                 key={index} 
                 className={`feedback-item-large ${item.type}`}
@@ -148,6 +177,12 @@ export function ScoreDisplay({ score, isNewRecord, previousBest }) {
               </li>
             ))}
           </ul>
+          {hasMoreItems && (
+            <p className="more-items-note">
+              Mostrando {displayedItems} de {totalItems} items. 
+              <a href="#" className="practice-link">Ver análisis completo en Práctica →</a>
+            </p>
+          )}
         </div>
       )}
     </div>

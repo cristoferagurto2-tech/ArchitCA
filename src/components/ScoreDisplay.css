@@ -204,6 +204,51 @@
   color: #c62828;
 }
 
+/* Nuevos estilos para modo simplificado */
+.feedback-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  position: relative;
+}
+
+.feedback-header h4 {
+  margin: 0;
+  flex: 1;
+  text-align: left;
+}
+
+.simplified-badge {
+  font-size: 11px;
+  color: #888;
+  background: #f0f0f0;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-weight: 500;
+  cursor: help;
+}
+
+.more-items-note {
+  font-size: 12px;
+  color: #666;
+  text-align: center;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid #eee;
+}
+
+.practice-link {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 600;
+  margin-left: 4px;
+}
+
+.practice-link:hover {
+  text-decoration: underline;
+}
+
 @media (max-width: 768px) {
   .score-display {
     padding: 20px;
@@ -231,5 +276,22 @@
   .score-details,
   .score-feedback-section {
     padding: 16px;
+  }
+  
+  .feedback-header {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .feedback-header h4 {
+    flex-basis: 100%;
+  }
+  
+  .simplified-badge {
+    font-size: 10px;
+  }
+  
+  .more-items-note {
+    font-size: 11px;
   }
 }

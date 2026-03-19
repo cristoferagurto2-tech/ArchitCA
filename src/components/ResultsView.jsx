@@ -1,8 +1,12 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import './ResultsView.css';
 import { ScoreDisplay } from './ScoreDisplay';
 import { calculateDesignScore } from '../utils/designScorer';
 import { useBestScore } from '../hooks/useScoreCalculator';
+import { StatsComparison } from './StatsComparison';
+import { NotificationBanner } from './NotificationBanner';
+import { useDailyStats } from '../hooks/useDailyStats';
+import { useNotifications } from '../hooks/useNotifications';
 
 export function ResultsView({ 
   design, 
@@ -11,6 +15,8 @@ export function ResultsView({
   onViewExamples 
 }) {
   const { getBestScore, saveBestScore } = useBestScore();
+  const { stats, recordScore } = useDailyStats();
+  const { currentNotification, generateScoreNotifications, dismissNotification } = useNotifications();
   
   const completedAt = new Date().toLocaleDateString('es-ES', {
     weekday: 'long',
@@ -33,23 +39,54 @@ export function ResultsView({
 
   const previousBest = challenge ? getBestScore(challenge.id) : 0;
 
-  return (
-    <div className="results-view">
-      <div className="results-header">
-        <div className="success-badge">🏆</div>
-        <h2>¡Desafío Completado! 🎉</h2>
-        <p className="completion-date">{completedAt}</p>
-      </div>
+  // Registrar score y generar notificaciones al montar
+  useEffect(() => {
+    if (score && challenge) {
+      // Registrar en estadísticas diarias
+      recordScore(score.total, challenge.id);
+      
+      // Generar notificaciones de score
+      generateScoreNotifications(score.total, stats);
+    }
+  }, [score, challenge, recordScore, generateScoreNotifications, stats]);
 
-      <div className="results-content">
-        {/* Score del Profesor */}
-        {score && scoreRecord && (
-          <ScoreDisplay 
-            score={score}
-            isNewRecord={scoreRecord.isNewRecord}
-            previousBest={scoreRecord.previousBest}
-          />
-        )}
+  return (
+    <>
+      {/* Notificación flotante */}
+      <NotificationBanner 
+        notification={currentNotification}
+        onDismiss={dismissNotification}
+      />
+      
+      <div className="results-view">
+        <div className="results-header">
+          <div className="success-badge">🏆</div>
+          <h2>¡Desafío Completado! 🎉</h2>
+          <p className="completion-date">{completedAt}</p>
+        </div>
+
+        <div className="results-content">
+          {/* Comparación de estadísticas */}
+          {score && (
+            <StatsComparison
+              todayScore={score.total}
+              yesterdayScore={stats.yesterdayScore}
+              average7Days={stats.average7Days}
+              personalBest={stats.personalBest}
+              currentStreak={stats.currentStreak}
+              bestStreak={stats.bestStreak}
+            />
+          )}
+
+          {/* Score del Profesor - Modo simplificado para Daily */}
+          {score && scoreRecord && (
+            <ScoreDisplay 
+              score={score}
+              isNewRecord={scoreRecord.isNewRecord}
+              previousBest={scoreRecord.previousBest}
+              mode="simple"
+            />
+          )}
 
         <div className="your-design-section">
           <h3>Tu Diseño</h3>
@@ -102,7 +139,8 @@ export function ResultsView({
           Nuevo Desafío
         </button>
       </div>
-    </div>
+      </div>
+    </>
   );
 }
 
