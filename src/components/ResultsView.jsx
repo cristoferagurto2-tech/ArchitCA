@@ -132,11 +132,11 @@ export function ResultsView({
       </div>
 
       <div className="results-actions">
-        <button className="action-btn secondary" onClick={onViewExamples}>
-          Ver Más Ejemplos
+        <button className="action-btn secondary">
+          Finalizar
         </button>
         <button className="action-btn primary" onClick={onNewDesign}>
-          Nuevo Desafío
+          Intentar mejorar
         </button>
       </div>
       </div>
