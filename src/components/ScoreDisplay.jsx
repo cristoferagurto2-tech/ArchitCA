@@ -28,6 +28,22 @@ export function ScoreDisplay({ score, isNewRecord, previousBest, mode = 'detaile
   const totalItems = feedback ? feedback.length : 0;
   const displayedItems = displayFeedback ? displayFeedback.length : 0;
   
+  // Función para convertir score a calificación cualitativa
+  const getQualitativeRating = (score) => {
+    if (score >= 20) return { text: 'Excelente', color: '#4caf50' };
+    if (score >= 15) return { text: 'Buena', color: '#8bc34a' };
+    if (score >= 10) return { text: 'Regular', color: '#ff9800' };
+    if (score >= 5) return { text: 'Mejorable', color: '#ff5722' };
+    return { text: 'Necesita trabajo', color: '#f44336' };
+  };
+  
+  // Función para obtener icono de accesibilidad
+  const getAccessibilityIcon = (score) => {
+    if (score >= 15) return '✅';
+    if (score >= 10) return '⚠️';
+    return '❌';
+  };
+  
   // Determinar color según score
   const getScoreColor = (score) => {
     if (score >= 80) return '#4caf50';
@@ -81,80 +97,118 @@ export function ScoreDisplay({ score, isNewRecord, previousBest, mode = 'detaile
       <div className="score-details">
         <h4>Desglose de Puntuación</h4>
         
-        <div className="score-categories">
-          <div className="category">
-            <div className="category-header">
-              <span className="category-name">Espacios Colocados</span>
-              <span className="category-score" style={{ color: scoreColor }}>
-                {breakdown.rooms}/25
+        {mode === 'simple' ? (
+          // MODO SIMPLE: Cualitativo con iconos
+          <div className="score-categories-qualitative">
+            <div className="qualitative-row">
+              <span className="qualitative-icon">{getAccessibilityIcon(breakdown.rooms)}</span>
+              <span className="qualitative-name">Espacios Colocados:</span>
+              <span className="qualitative-value" style={{ color: getQualitativeRating(breakdown.rooms).color }}>
+                {getQualitativeRating(breakdown.rooms).text}
               </span>
             </div>
-            <div className="category-bar">
-              <div 
-                className="category-fill"
-                style={{ 
-                  width: `${(breakdown.rooms / 25) * 100}%`,
-                  backgroundColor: scoreColor
-                }}
-              />
-            </div>
-          </div>
-          
-          <div className="category">
-            <div className="category-header">
-              <span className="category-name">Área Mínima Cumplida</span>
-              <span className="category-score" style={{ color: scoreColor }}>
-                {breakdown.minArea}/25
+            
+            <div className="qualitative-row">
+              <span className="qualitative-icon">{getAccessibilityIcon(breakdown.minArea)}</span>
+              <span className="qualitative-name">Área Mínima Cumplida:</span>
+              <span className="qualitative-value" style={{ color: getQualitativeRating(breakdown.minArea).color }}>
+                {getQualitativeRating(breakdown.minArea).text}
               </span>
             </div>
-            <div className="category-bar">
-              <div 
-                className="category-fill"
-                style={{ 
-                  width: `${(breakdown.minArea / 25) * 100}%`,
-                  backgroundColor: scoreColor
-                }}
-              />
-            </div>
-          </div>
-          
-          <div className="category">
-            <div className="category-header">
-              <span className="category-name">Uso Eficiente del Terreno</span>
-              <span className="category-score" style={{ color: scoreColor }}>
-                {breakdown.efficiency}/25
+            
+            <div className="qualitative-row">
+              <span className="qualitative-icon">{getAccessibilityIcon(breakdown.efficiency)}</span>
+              <span className="qualitative-name">Uso Eficiente del Terreno:</span>
+              <span className="qualitative-value" style={{ color: getQualitativeRating(breakdown.efficiency).color }}>
+                {getQualitativeRating(breakdown.efficiency).text}
               </span>
             </div>
-            <div className="category-bar">
-              <div 
-                className="category-fill"
-                style={{ 
-                  width: `${(breakdown.efficiency / 25) * 100}%`,
-                  backgroundColor: scoreColor
-                }}
-              />
-            </div>
-            <span className="occupancy-note">Ocupación: {occupancyRate}%</span>
-          </div>
-          
-          <div className="category">
-            <div className="category-header">
-              <span className="category-name">Proximidad Lógica</span>
-              <span className="category-score" style={{ color: scoreColor }}>
-                {breakdown.proximity}/25
+            
+            <div className="qualitative-row">
+              <span className="qualitative-icon">{getAccessibilityIcon(breakdown.proximity)}</span>
+              <span className="qualitative-name">Proximidad Lógica:</span>
+              <span className="qualitative-value" style={{ color: getQualitativeRating(breakdown.proximity).color }}>
+                {getQualitativeRating(breakdown.proximity).text}
               </span>
             </div>
-            <div className="category-bar">
-              <div 
-                className="category-fill"
-                style={{ 
-                  width: `${(breakdown.proximity / 25) * 100}%`,
-                  backgroundColor: scoreColor
-                }}
-              />
+          </div>
+        ) : (
+          // MODO DETAILED: Numérico con barras
+          <div className="score-categories">
+            <div className="category">
+              <div className="category-header">
+                <span className="category-name">Espacios Colocados</span>
+                <span className="category-score" style={{ color: scoreColor }}>
+                  {breakdown.rooms}/25
+                </span>
+              </div>
+              <div className="category-bar">
+                <div 
+                  className="category-fill"
+                  style={{ 
+                    width: `${(breakdown.rooms / 25) * 100}%`,
+                    backgroundColor: scoreColor
+                  }}
+                />
+              </div>
+            </div>
+            
+            <div className="category">
+              <div className="category-header">
+                <span className="category-name">Área Mínima Cumplida</span>
+                <span className="category-score" style={{ color: scoreColor }}>
+                  {breakdown.minArea}/25
+                </span>
+              </div>
+              <div className="category-bar">
+                <div 
+                  className="category-fill"
+                  style={{ 
+                    width: `${(breakdown.minArea / 25) * 100}%`,
+                    backgroundColor: scoreColor
+                  }}
+                />
+              </div>
+            </div>
+            
+            <div className="category">
+              <div className="category-header">
+                <span className="category-name">Uso Eficiente del Terreno</span>
+                <span className="category-score" style={{ color: scoreColor }}>
+                  {breakdown.efficiency}/25
+                </span>
+              </div>
+              <div className="category-bar">
+                <div 
+                  className="category-fill"
+                  style={{ 
+                    width: `${(breakdown.efficiency / 25) * 100}%`,
+                    backgroundColor: scoreColor
+                  }}
+                />
+              </div>
+              <span className="occupancy-note">Ocupación: {occupancyRate}%</span>
+            </div>
+            
+            <div className="category">
+              <div className="category-header">
+                <span className="category-name">Proximidad Lógica</span>
+                <span className="category-score" style={{ color: scoreColor }}>
+                  {breakdown.proximity}/25
+                </span>
+              </div>
+              <div className="category-bar">
+                <div 
+                  className="category-fill"
+                  style={{ 
+                    width: `${(breakdown.proximity / 25) * 100}%`,
+                    backgroundColor: scoreColor
+                  }}
+                />
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
       
       {displayFeedback && displayFeedback.length > 0 && (
