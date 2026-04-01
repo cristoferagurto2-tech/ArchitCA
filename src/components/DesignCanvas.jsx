@@ -2,6 +2,8 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import './DesignCanvas.css';
 import { ScorePanel } from './ScorePanel';
 import { useScoreCalculator } from '../hooks/useScoreCalculator';
+import { checkCollision, findNearestValidPosition } from '../utils/collisionDetection';
+import { playSound, vibrate } from '../utils/audioFeedback';
 
 const BASE_GRID_SIZE = 30; // pixels per meter a zoom 1.0
 const MIN_ZOOM = 0.3;
@@ -383,11 +385,45 @@ export function DesignCanvas({
           x: snappedX,
           y: snappedY,
           width: roomWidth,
-          height: roomHeight,
-          placedAt: Date.now()
+          height: roomHeight
         };
 
-        setPlacedRooms(prev => [...prev, newRoom]);
+        // VALIDACIÓN DE COLISIÓN (NUEVO)
+        if (checkCollision(newRoom, placedRooms)) {
+          // Intentar encontrar posición válida cercana
+          const validPos = findNearestValidPosition(
+            snappedX, 
+            snappedY, 
+            newRoom, 
+            placedRooms
+          );
+          
+          if (validPos.found) {
+            // Snap exitoso: colocar en posición válida
+            const roomWithValidPos = {
+              ...newRoom,
+              x: validPos.x,
+              y: validPos.y,
+              placedAt: Date.now()
+            };
+            
+            setPlacedRooms(prev => [...prev, roomWithValidPos]);
+            playSound('snap');
+            vibrate([50]);
+          } else {
+            // No hay espacio disponible
+            playSound('bloqueo');
+            vibrate([100, 50, 100]);
+            // Mostrar feedback visual de error (podríamos agregar estado para esto)
+            console.warn('No hay espacio disponible para colocar la habitación');
+          }
+          return;
+        }
+
+        // Sin colisión: agregar normalmente
+        setPlacedRooms(prev => [...prev, { ...newRoom, placedAt: Date.now() }]);
+        playSound('exito');
+        vibrate([30, 30]);
       }
     } catch (error) {
       console.error('Error dropping room:', error);
