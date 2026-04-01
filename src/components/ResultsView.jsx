@@ -7,6 +7,8 @@ import { StatsComparison } from './StatsComparison';
 import { NotificationBanner } from './NotificationBanner';
 import { useDailyStats } from '../hooks/useDailyStats';
 import { useNotifications } from '../hooks/useNotifications';
+import { useDailyLevels } from '../hooks/useDailyLevels';
+import { LevelProgress } from './LevelProgress';
 
 export function ResultsView({ 
   design, 
@@ -17,6 +19,7 @@ export function ResultsView({
   const { getBestScore, saveBestScore } = useBestScore();
   const { stats, recordScore } = useDailyStats();
   const { currentNotification, generateScoreNotifications, dismissNotification } = useNotifications();
+  const { currentLevel, currentDay, totalLevels, completeLevel, shouldShowRestartMessage, dismissRestartMessage, hasCompletedToday } = useDailyLevels();
   
   const completedAt = new Date().toLocaleDateString('es-ES', {
     weekday: 'long',
@@ -45,10 +48,15 @@ export function ResultsView({
       // Registrar en estadísticas diarias
       recordScore(score.total, challenge.id);
       
+      // Subir de nivel en el sistema de niveles
+      if (!hasCompletedToday()) {
+        completeLevel();
+      }
+      
       // Generar notificaciones de score
       generateScoreNotifications(score.total, stats);
     }
-  }, [score, challenge, recordScore, generateScoreNotifications, stats]);
+  }, [score, challenge, recordScore, generateScoreNotifications, stats, completeLevel, hasCompletedToday]);
 
   return (
     <>
@@ -87,6 +95,15 @@ export function ResultsView({
               mode="simple"
             />
           )}
+
+          {/* Progreso de niveles */}
+          <LevelProgress 
+            currentLevel={currentLevel}
+            currentDay={currentDay}
+            totalLevels={totalLevels}
+            showRestartMessage={shouldShowRestartMessage()}
+            onDismissRestartMessage={dismissRestartMessage}
+          />
 
         <div className="your-design-section">
           <h3>Tu Diseño</h3>
